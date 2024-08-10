@@ -10,7 +10,7 @@ tracing = "0.1.40"
 
 [package]
 name = "auxmos"
-version = "2.3.0"
+version = "2.5.2"
 authors = ["Putnam <putnam3145@gmail.com>"]
 edition = "2021"
 
