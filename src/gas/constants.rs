@@ -142,6 +142,6 @@ pub const GAS_TRITIUM: &str = "tritium";
 pub const GAS_BZ: &str = "bz";
 pub const GAS_STIMULUM: &str = "stim";
 pub const GAS_PLUOXIUM: &str = "pluox";
-pub const GAS_MIASMA: &str = "miasma";
-pub const GAS_METHANE: &str = "methane";
-pub const GAS_METHYL_BROMIDE: &str = "methyl_bromide";
+// NSV13 - removed miasma, methane, and methyl bromide. Added nucleium and constricted plasma.
+pub const GAS_CONSTRICTED_PLASMA: &str = "constricted_plasma";
+pub const GAS_NUCLEIUM: &str = "nucleium";
