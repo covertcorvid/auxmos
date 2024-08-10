@@ -55,7 +55,7 @@ dependencies = [
 
 [[package]]
 name = "auxmos"
-version = "2.5.2.1"
+version = "2.5.2-a"
 dependencies = [
  "ahash",
  "atomic_float",
