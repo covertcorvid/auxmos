@@ -12,7 +12,7 @@ tracing = "0.1.40"
 name = "auxmos"
 version = "2.5.2-a"
 authors = ["Putnam <putnam3145@gmail.com>"]
-edition = "2024"
+edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
