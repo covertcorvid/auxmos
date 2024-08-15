@@ -82,7 +82,7 @@ jobs:
             - name: Write fastmos checksum to a file
               shell: bash
               run: |
-                  sha256sum "{{ matrix.fastmos_target_name }}/${{ matrix.target_name }}/release/${{ matrix.artifact_name }}" | tee ${{ matrix.fastmos_target_name }}_${{ matrix.artifact_name }}.sha256
+                  sha256sum "${{ matrix.fastmos_target_name }}/${{ matrix.target_name }}/release/${{ matrix.artifact_name }}" | tee ${{ matrix.fastmos_target_name }}_${{ matrix.artifact_name }}.sha256
 
             - name: Write slowmos checksum to a file
               shell: bash
