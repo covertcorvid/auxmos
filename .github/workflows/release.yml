@@ -94,7 +94,7 @@ jobs:
               with:
                   repo_token: ${{ secrets.GITHUB_TOKEN }}
                   file: ${{ matrix.fastmos_target_name }}_${{ matrix.artifact_name }}.sha256
-                  asset_name: ${{ matrix.artifact_name }}.sha256
+                  asset_name: ${{ matrix.fastmos_target_name }}_${{ matrix.artifact_name }}.sha256
                   tag: ${{ github.ref }}
 
             - name: Upload slowmos checksum files to release
@@ -102,7 +102,7 @@ jobs:
               with:
                   repo_token: ${{ secrets.GITHUB_TOKEN }}
                   file: ${{ matrix.slowmos_target_name }}_${{ matrix.artifact_name }}.sha256
-                  asset_name: ${{ matrix.artifact_name }}.sha256
+                  asset_name: ${{ matrix.slowmos_target_name }}_${{ matrix.artifact_name }}.sha256
                   tag: ${{ github.ref }}
 
             - name: Upload fastmos binary to release
