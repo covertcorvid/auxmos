@@ -56,7 +56,8 @@ jobs:
               if: matrix.os == 'windows-latest'
 
             - name: Build auxmos without explosive decompression (Windows)
-            with:
+              uses: actions-rs/cargo@v1
+              with:
                   toolchain: stable
                   command: build
                   args: --target i686-pc-windows-msvc --release --features "katmos katmos_slow_decompression citadel_reactions" --target-dir={{ matrix.slowmos_target_name }}
