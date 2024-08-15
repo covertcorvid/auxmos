@@ -14,10 +14,14 @@ jobs:
                     - os: ubuntu-20.04
                       target_name: i686-unknown-linux-gnu
                       artifact_name: libauxmos.so
+                      fastmos_target_name: fastmos
+                      slowmos_target_name: slowmos
                     - os: windows-latest
                       target_name: i686-pc-windows-msvc
                       artifact_name: auxmos.dll
                       debug_pdb_name: auxmos.pdb
+                      fastmos_target_name: fastmos
+                      slowmos_target_name: slowmos
         steps:
             - name: Checkout
               uses: actions/checkout@v1
@@ -43,48 +47,93 @@ jobs:
                   target: i686-unknown-linux-gnu
               if: matrix.os == 'ubuntu-20.04'
 
-            - name: Build auxmos (Windows)
+            - name: Build auxmos with explosive decompression (Windows)
               uses: actions-rs/cargo@v1
               with:
                   toolchain: stable
                   command: build
-                  args: --target i686-pc-windows-msvc --release --features katmos
+                  args: --target i686-pc-windows-msvc --release --features "katmos citadel_reactions" --target-dir={{ matrix.fastmos_target_name }}
               if: matrix.os == 'windows-latest'
 
-            - name: Build auxmos (Ubuntu)
+            - name: Build auxmos without explosive decompression (Windows)
+            with:
+                  toolchain: stable
+                  command: build
+                  args: --target i686-pc-windows-msvc --release --features "katmos katmos_slow_decompression citadel_reactions" --target-dir={{ matrix.slowmos_target_name }}
+              if: matrix.os == 'windows-latest'
+
+            - name: Build auxmos with explosive decompression (Ubuntu)
               uses: actions-rs/cargo@v1
               with:
                   toolchain: stable
                   command: build
-                  args: --target i686-unknown-linux-gnu --release --features katmos
+                  args: --target i686-unknown-linux-gnu --release --features "katmos citadel_reactions"
               if: matrix.os == 'ubuntu-20.04'
 
-            - name: Write checksum to a file
+            - name: Build auxmos without explosive decompression (Ubuntu)
+              uses: actions-rs/cargo@v1
+              with:
+                  toolchain: stable
+                  command: build
+                  args: --target i686-unknown-linux-gnu --release --features "katmos katmos_slow_decompression citadel_reactions"
+              if: matrix.os == 'ubuntu-20.04'
+
+            - name: Write fastmos checksum to a file
               shell: bash
               run: |
-                  sha256sum "target/${{ matrix.target_name }}/release/${{ matrix.artifact_name }}" | tee ${{ matrix.artifact_name }}.sha256
+                  sha256sum "{{ matrix.fastmos_target_name }}/${{ matrix.target_name }}/release/${{ matrix.artifact_name }}" | tee ${{ matrix.fastmos_target_name }}_${{ matrix.artifact_name }}.sha256
 
-            - name: Upload checksum files to release
+            - name: Write slowmos checksum to a file
+              shell: bash
+              run: |
+                  sha256sum "${{ matrix.slowmos_target_name }}/${{ matrix.target_name }}/release/${{ matrix.artifact_name }}" | tee ${{ matrix.slowmos_target_name }}_${{ matrix.artifact_name }}.sha256
+
+            - name: Upload fastmos checksum files to release
               uses: svenstaro/upload-release-action@v1-release
               with:
                   repo_token: ${{ secrets.GITHUB_TOKEN }}
-                  file: ${{ matrix.artifact_name }}.sha256
+                  file: ${{ matrix.fastmos_target_name }}_${{ matrix.artifact_name }}.sha256
                   asset_name: ${{ matrix.artifact_name }}.sha256
                   tag: ${{ github.ref }}
 
-            - name: Upload binary to release
+            - name: Upload slowmos checksum files to release
               uses: svenstaro/upload-release-action@v1-release
               with:
                   repo_token: ${{ secrets.GITHUB_TOKEN }}
-                  file: target/${{ matrix.target_name }}/release/${{ matrix.artifact_name }}
-                  asset_name: ${{ matrix.artifact_name }}
+                  file: ${{ matrix.slowmos_target_name }}_${{ matrix.artifact_name }}.sha256
+                  asset_name: ${{ matrix.artifact_name }}.sha256
                   tag: ${{ github.ref }}
 
-            - name: Upload debug informations to release
+            - name: Upload fastmos binary to release
               uses: svenstaro/upload-release-action@v1-release
               with:
                   repo_token: ${{ secrets.GITHUB_TOKEN }}
-                  file: target/${{ matrix.target_name }}/release/${{ matrix.debug_pdb_name }}
-                  asset_name: ${{ matrix.debug_pdb_name }}
+                  file: ${{ matrix.fastmos_target_name }}/${{ matrix.target_name }}/release/${{ matrix.artifact_name }}
+                  asset_name: ${{ matrix.fastmos_target_name }}_${{ matrix.artifact_name }}
+                  tag: ${{ github.ref }}
+
+            - name: Upload slowmos binary to release
+              uses: svenstaro/upload-release-action@v1-release
+              with:
+                  repo_token: ${{ secrets.GITHUB_TOKEN }}
+                  file:  ${{ matrix.slowmos_target_name }}/${{ matrix.target_name }}/release/${{ matrix.artifact_name }}
+                  asset_name: ${{ matrix.slowmos_target_name }}_${{ matrix.artifact_name }}
+                  tag: ${{ github.ref }}
+
+            - name: Upload fastmos debug informations to release
+              uses: svenstaro/upload-release-action@v1-release
+              with:
+                  repo_token: ${{ secrets.GITHUB_TOKEN }}
+                  file: ${{ matrix.fastmos_target_name }}/${{ matrix.target_name }}/release/${{ matrix.debug_pdb_name }}
+                  asset_name: ${{ matrix.fastmos_target_name }}_${{ matrix.debug_pdb_name }}
+                  tag: ${{ github.ref }}
+              if: matrix.os == 'windows-latest'
+
+            - name: Upload slowmos debug informations to release
+              uses: svenstaro/upload-release-action@v1-release
+              with:
+                  repo_token: ${{ secrets.GITHUB_TOKEN }}
+                  file: ${{ matrix.slowmos_target_name }}/${{ matrix.target_name }}/release/${{ matrix.debug_pdb_name }}
+                  asset_name: ${{ matrix.slowmos_target_name }}_${{ matrix.debug_pdb_name }}
                   tag: ${{ github.ref }}
               if: matrix.os == 'windows-latest'
