@@ -52,7 +52,7 @@ jobs:
               with:
                   toolchain: stable
                   command: build
-                  args: --target i686-pc-windows-msvc --release --features "katmos citadel_reactions" --target-dir={{ matrix.fastmos_target_name }}
+                  args: --target i686-pc-windows-msvc --release --features "katmos citadel_reactions" --target-dir=fastmos
               if: matrix.os == 'windows-latest'
 
             - name: Build auxmos without explosive decompression (Windows)
@@ -60,7 +60,7 @@ jobs:
               with:
                   toolchain: stable
                   command: build
-                  args: --target i686-pc-windows-msvc --release --features "katmos katmos_slow_decompression citadel_reactions" --target-dir={{ matrix.slowmos_target_name }}
+                  args: --target i686-pc-windows-msvc --release --features "katmos katmos_slow_decompression citadel_reactions" --target-dir=slowmos
               if: matrix.os == 'windows-latest'
 
             - name: Build auxmos with explosive decompression (Ubuntu)
@@ -68,7 +68,7 @@ jobs:
               with:
                   toolchain: stable
                   command: build
-                  args: --target i686-unknown-linux-gnu --release --features "katmos citadel_reactions"
+                  args: --target i686-unknown-linux-gnu --release --features "katmos citadel_reactions" --target-dir=fastmos
               if: matrix.os == 'ubuntu-20.04'
 
             - name: Build auxmos without explosive decompression (Ubuntu)
@@ -76,7 +76,7 @@ jobs:
               with:
                   toolchain: stable
                   command: build
-                  args: --target i686-unknown-linux-gnu --release --features "katmos katmos_slow_decompression citadel_reactions"
+                  args: --target i686-unknown-linux-gnu --release --features "katmos katmos_slow_decompression citadel_reactions" --target-dir=slowmos
               if: matrix.os == 'ubuntu-20.04'
 
             - name: Write fastmos checksum to a file
